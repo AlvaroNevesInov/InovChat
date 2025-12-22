@@ -3,6 +3,7 @@
 namespace App\Livewire\Chat;
 
 use App\Models\Sala;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\Attributes\On;
 
@@ -24,7 +25,13 @@ class SalasList extends Component
 
     public function render()
     {
-        $salas = auth()->user()->salas()->with('ultimaMensagem.user')->get();
+        $salas = collect();
+
+        if (Auth::check()) {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+            $salas = $user->salas()->with('ultimaMensagem.user')->get();
+        }
 
         return view('livewire.chat.salas-list', [
             'salas' => $salas,

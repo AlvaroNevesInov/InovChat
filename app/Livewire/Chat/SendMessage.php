@@ -4,6 +4,7 @@ namespace App\Livewire\Chat;
 
 use App\Models\Mensagem;
 use App\Events\MensagemEnviada;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\Attributes\On;
 
@@ -13,6 +14,7 @@ class SendMessage extends Component
     public $conteudo = '';
 
     #[On('salaSelected')]
+
     public function atualizarSala($salaId)
     {
         $this->salaId = $salaId;
@@ -29,13 +31,13 @@ class SendMessage extends Component
         }
 
         $mensagem = Mensagem::create([
-            'user_id' => auth()->id(),
+
+            'user_id' => Auth::id(),
             'sala_id' => $this->salaId,
             'conteudo' => $this->conteudo,
         ]);
 
         event(new MensagemEnviada($mensagem));
-
         $this->dispatch('mensagemEnviada');
         $this->conteudo = '';
     }
