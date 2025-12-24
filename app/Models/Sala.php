@@ -9,6 +9,7 @@ class Sala extends Model
     protected $fillable = [
         'nome',
         'avatar',
+        'owner_id',
     ];
 
     public function users()
@@ -24,5 +25,10 @@ class Sala extends Model
     public function ultimaMensagem()
     {
         return $this->hasOne(Mensagem::class)->latestOfMany();
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
     }
 }

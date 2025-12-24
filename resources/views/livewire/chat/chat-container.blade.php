@@ -17,7 +17,7 @@
 
             <!-- Formulário de Envio -->
             <div class="border-t border-gray-200 bg-white p-4">
-                <livewire:chat.send-message :key="'send-' . $salaAtiva" />
+                <livewire:chat.send-message :key="'send-' . $salaAtiva" :salaId="$salaAtiva" />
             </div>
         @else
             <div class="flex-1 flex items-center justify-center text-gray-500">

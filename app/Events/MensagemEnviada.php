@@ -8,11 +8,11 @@ use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MensagemEnviada implements ShouldBroadcast
+class MensagemEnviada implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $mensagem;
@@ -45,7 +45,16 @@ class MensagemEnviada implements ShouldBroadcast
     public function broadcastWith(): array
     {
         return [
-            'mensagem' => $this->mensagem,
+            'id' => $this->mensagem->id,
+            'sala_id' => $this->mensagem->sala_id,
+            'user_id' => $this->mensagem->user_id,
+            'conteudo' => $this->mensagem->conteudo,
+            'created_at' => $this->mensagem->created_at->toIso8601String(),
+            'user' => [
+                'id' => $this->mensagem->user->id,
+                'name' => $this->mensagem->user->name,
+                'avatar' => $this->mensagem->user->avatar,
+            ],
         ];
     }
 }

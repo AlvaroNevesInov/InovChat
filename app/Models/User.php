@@ -63,4 +63,14 @@ class User extends Authenticatable
     {
         return $this->permissao === 'Admin';
     }
+
+    public function contacts()
+    {
+        return $this->belongsToMany(User::class, 'contacts', 'user_id', 'contact_id')->withTimestamps();
+    }
+
+    public function contactOf()
+    {
+        return $this->belongsToMany(User::class, 'contacts', 'contact_id', 'user_id')->withTimestamps();
+    }
 }

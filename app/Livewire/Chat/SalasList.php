@@ -17,6 +17,20 @@ class SalasList extends Component
         // Força atualização da lista quando nova mensagem é enviada
     }
 
+    #[On('roomCreated')]
+    public function handleRoomCreated($salaId)
+    {
+        $this->salaAtiva = $salaId;
+        $this->dispatch('salaSelected', salaId: $salaId);
+    }
+
+    #[On('membersAdded')]
+    #[On('membersUpdated')]
+    public function handleMembersUpdated()
+    {
+        // Força atualização da lista
+    }
+
     public function selecionarSala($salaId)
     {
         $this->salaAtiva = $salaId;
