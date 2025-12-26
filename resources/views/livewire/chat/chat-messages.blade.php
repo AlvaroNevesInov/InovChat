@@ -49,7 +49,41 @@
                                 </span>
                             </div>
                             <div class="mt-1 px-4 py-2 rounded-lg {{ $mensagem->user_id === auth()->id() ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-900' }}">
-                                <p class="text-sm break-words">{!! highlight_mentions($mensagem->conteudo) !!}</p>
+                                @if($mensagem->conteudo)
+                                    <p class="text-sm break-words">{!! highlight_mentions($mensagem->conteudo) !!}</p>
+                                @endif
+
+                                @if($mensagem->hasAttachment())
+                                    <div class="mt-2 {{ $mensagem->conteudo ? 'pt-2 border-t' : '' }} {{ $mensagem->user_id === auth()->id() ? 'border-blue-400' : 'border-gray-300' }}">
+                                        <!-- Preview para imagens -->
+                                        @if(str_contains($mensagem->file_type, 'image'))
+                                            <a href="{{ route('download.attachment', $mensagem->id) }}" target="_blank" class="block">
+                                                <img
+                                                    src="{{ $mensagem->file_url }}"
+                                                    alt="{{ $mensagem->file_name }}"
+                                                    class="max-w-full rounded-lg cursor-pointer hover:opacity-90 transition"
+                                                    style="max-height: 300px;"
+                                                >
+                                            </a>
+                                            <p class="text-xs mt-1 opacity-75">{{ $mensagem->file_name }} ({{ $mensagem->file_size_formatted }})</p>
+                                        @else
+                                            <!-- Outros tipos de ficheiro -->
+                                            <a
+                                                href="{{ route('download.attachment', $mensagem->id) }}"
+                                                class="flex items-center space-x-2 p-2 rounded {{ $mensagem->user_id === auth()->id() ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-300 hover:bg-gray-400' }} transition"
+                                            >
+                                                <span class="text-2xl">{{ $mensagem->file_icon }}</span>
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="text-sm font-medium truncate">{{ $mensagem->file_name }}</p>
+                                                    <p class="text-xs opacity-75">{{ $mensagem->file_size_formatted }}</p>
+                                                </div>
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                                </svg>
+                                            </a>
+                                        @endif
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
