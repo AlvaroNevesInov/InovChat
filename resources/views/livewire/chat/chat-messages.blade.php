@@ -44,12 +44,12 @@
                                 <span class="text-xs font-medium text-gray-900 {{ $mensagem->user_id === auth()->id() ? 'ml-2' : 'mr-2' }}">
                                     {{ $mensagem->user->name }}
                                 </span>
-                                <span class="text-xs text-gray-500">
-                                    {{ $mensagem->created_at->format('H:i') }}
+                                <span class="text-xs text-gray-500" title="{{ $mensagem->created_at->format('d/m/Y H:i:s') }}">
+                                    {{ contextual_timestamp($mensagem->created_at) }}
                                 </span>
                             </div>
                             <div class="mt-1 px-4 py-2 rounded-lg {{ $mensagem->user_id === auth()->id() ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-900' }}">
-                                <p class="text-sm break-words">{{ $mensagem->conteudo }}</p>
+                                <p class="text-sm break-words">{!! highlight_mentions($mensagem->conteudo) !!}</p>
                             </div>
                         </div>
                     </div>
@@ -59,6 +59,26 @@
                     <p>Nenhuma mensagem ainda. Seja o primeiro a enviar!</p>
                 </div>
             @endforelse
+
+            <!-- Typing Indicators -->
+            @if(count($usersTyping) > 0)
+                <div class="flex items-center space-x-2 text-sm text-gray-500 italic px-4 py-2">
+                    <div class="flex space-x-1">
+                        <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0ms;"></span>
+                        <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 150ms;"></span>
+                        <span class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 300ms;"></span>
+                    </div>
+                    <span>
+                        @if(count($usersTyping) === 1)
+                            {{ array_values($usersTyping)[0]['name'] }} está a escrever...
+                        @elseif(count($usersTyping) === 2)
+                            {{ array_values($usersTyping)[0]['name'] }} e {{ array_values($usersTyping)[1]['name'] }} estão a escrever...
+                        @else
+                            {{ count($usersTyping) }} pessoas estão a escrever...
+                        @endif
+                    </span>
+                </div>
+            @endif
         </div>
 
         <script>
@@ -77,6 +97,13 @@
                         container.scrollTop = container.scrollHeight;
                     }
                 }, 100);
+            });
+
+            // Limpar typing indicator após 3 segundos
+            Livewire.on('clearTypingIndicator', (event) => {
+                setTimeout(() => {
+                    @this.clearTypingUser(event.userId);
+                }, 3000);
             });
         </script>
     @endif

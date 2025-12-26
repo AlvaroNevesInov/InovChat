@@ -3,6 +3,7 @@
 namespace App\Livewire\Contacts;
 
 use App\Models\User;
+use App\Models\Sala;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -58,6 +59,15 @@ class ContactsList extends Component
         $user = Auth::user();
         $user->contacts()->detach($contactId);
         session()->flash('message', 'Contacto removido!');
+    }
+
+    public function startDM($contactId)
+    {
+        $dm = Sala::findOrCreateDM(Auth::id(), $contactId);
+
+        // Redirecionar para a página de chat e selecionar a DM
+        $this->dispatch('roomCreated', salaId: $dm->id);
+        return redirect()->route('chat')->with('selectedRoom', $dm->id);
     }
 
     public function getContactsProperty()

@@ -1,5 +1,4 @@
 <div>
-
     <!-- Botão Criar Nova Sala -->
     <div class="p-4">
 
@@ -18,7 +17,7 @@
                     class="flex items-center flex-1 cursor-pointer"
                 >
                     <!-- Avatar da Sala -->
-                    <div class="flex-shrink-0 mr-3">
+                    <div class="flex-shrink-0 mr-3 relative">
                         @if($sala->avatar)
                             <img src="{{ Storage::url($sala->avatar) }}" alt="{{ $sala->nome }}" class="w-12 h-12 rounded-full object-cover">
                         @else
@@ -28,22 +27,44 @@
                                 </span>
                             </div>
                         @endif
+
+                        <!-- Badge de Unread -->
+                        @if($sala->unread_count > 0)
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-lg">
+                                {{ $sala->unread_count > 9 ? '9+' : $sala->unread_count }}
+                            </span>
+                        @endif
                     </div>
 
                     <!-- Info da Sala -->
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between items-baseline">
-                            <h3 class="text-sm font-semibold text-gray-900 truncate">
-                                {{ $sala->nome }}
-                            </h3>
+                            <div class="flex items-center space-x-1 flex-1 min-w-0 mr-2">
+                                @if($sala->isDM())
+                                    <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                @else
+                                    <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                @endif
+                                <h3 class="text-sm font-semibold text-gray-900 truncate {{ $sala->unread_count > 0 ? 'font-bold' : '' }}">
+                                    @if($sala->isDM() && $sala->getOtherUserInDM())
+                                        {{ $sala->getOtherUserInDM()->name }}
+                                    @else
+                                        {{ $sala->nome }}
+                                    @endif
+                                </h3>
+                            </div>
                             @if($sala->ultimaMensagem)
-                                <span class="text-xs text-gray-500">
-                                    {{ $sala->ultimaMensagem->created_at->diffForHumans() }}
+                                <span class="text-xs text-gray-500 flex-shrink-0" title="{{ $sala->ultimaMensagem->created_at->format('d/m/Y H:i:s') }}">
+                                    {{ contextual_timestamp($sala->ultimaMensagem->created_at) }}
                                 </span>
                             @endif
                         </div>
                         @if($sala->ultimaMensagem)
-                            <p class="text-sm text-gray-600 truncate">
+                            <p class="text-sm {{ $sala->unread_count > 0 ? 'text-gray-900 font-medium' : 'text-gray-600' }} truncate">
                                 <span class="font-medium">{{ $sala->ultimaMensagem->user->name }}:</span>
                                 {{ $sala->ultimaMensagem->conteudo }}
                             </p>

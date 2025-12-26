@@ -31,13 +31,25 @@
                             <p class="text-sm text-gray-500">{{ $contact->email }}</p>
                         </div>
                     </div>
-                    <button
-                        wire:click="removeContact({{ $contact->id }})"
-                        wire:confirm="Tem a certeza que quer remover este contacto?"
-                        class="px-3 py-1 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition"
-                    >
-                        Remover
-                    </button>
+                    <div class="flex items-center space-x-2">
+                        <button
+                            wire:click="startDM({{ $contact->id }})"
+                            class="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-lg shadow transition flex items-center space-x-1"
+                            title="Enviar mensagem"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                            <span>Mensagem</span>
+                        </button>
+                        <button
+                            wire:click="removeContact({{ $contact->id }})"
+                            wire:confirm="Tem a certeza que quer remover este contacto?"
+                            class="px-3 py-1 text-sm text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition"
+                        >
+                            Remover
+                        </button>
+                    </div>
                 </div>
             @empty
                 <div class="px-6 py-12 text-center text-gray-500">

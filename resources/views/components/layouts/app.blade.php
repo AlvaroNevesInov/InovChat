@@ -34,6 +34,9 @@
                     </div>
                     <div class="flex items-center gap-3">
                         @auth
+                            <!-- Notifications Bell -->
+                            <livewire:notifications.notification-bell />
+
                             <!-- Settings Dropdown -->
                             <x-dropdown align="right" width="48">
                                 <x-slot name="trigger">

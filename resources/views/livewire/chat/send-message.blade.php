@@ -1,5 +1,5 @@
-<div>
-<form wire:submit="enviarMensagem" class="flex items-center space-x-2">
+<div x-data="{ typingTimeout: null }">
+    <form wire:submit="enviarMensagem" class="flex items-center space-x-2">
         <div class="flex-1">
             <input
                 type="text"
@@ -7,6 +7,14 @@
                 placeholder="Escreve a tua mensagem..."
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 {{ $salaId ? '' : 'disabled' }}
+                @keydown="
+                    clearTimeout(typingTimeout);
+                    typingTimeout = setTimeout(() => {
+                        if ($wire.salaId) {
+                            $wire.notifyTyping();
+                        }
+                    }, 300);
+                "
             >
             @error('conteudo')
                 <span class="text-xs text-red-500 mt-1">{{ $message }}</span>
