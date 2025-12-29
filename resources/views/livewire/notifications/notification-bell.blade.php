@@ -1,4 +1,7 @@
-<div x-data="{ open: false }" @click.away="open = false" class="relative">
+<div
+    x-data="{ open: false }"
+    @click.away="open = false"
+    class="relative">
     <!-- Bell Icon with Badge -->
     <button
         @click="open = !open"

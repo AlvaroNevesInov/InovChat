@@ -30,7 +30,58 @@ if (!function_exists('get_mentioned_users')) {
             return collect([]);
         }
 
-        return User::whereIn('name', $usernames)->get();
+        // Buscar todos os usuários e filtrar manualmente para lidar com acentos e case-insensitive
+        $users = User::all();
+        $mentionedUsers = collect([]);
+
+        foreach ($usernames as $username) {
+            $normalizedUsername = remove_accents(strtolower($username));
+
+            foreach ($users as $user) {
+                // Comparar com nome completo
+                $normalizedFullName = remove_accents(strtolower($user->name));
+
+                // Comparar com primeiro nome
+                $firstName = explode(' ', $user->name)[0];
+                $normalizedFirstName = remove_accents(strtolower($firstName));
+
+                if ($normalizedFullName === $normalizedUsername || $normalizedFirstName === $normalizedUsername) {
+                    if (!$mentionedUsers->contains('id', $user->id)) {
+                        $mentionedUsers->push($user);
+                    }
+                    break;
+                }
+            }
+        }
+
+        return $mentionedUsers;
+    }
+}
+
+if (!function_exists('remove_accents')) {
+    /**
+     * Remove acentos de uma string
+     * @param string $string
+     * @return string
+     */
+    function remove_accents(string $string): string
+    {
+        $accents = [
+            'á' => 'a', 'à' => 'a', 'ã' => 'a', 'â' => 'a', 'ä' => 'a',
+            'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
+            'í' => 'i', 'ì' => 'i', 'î' => 'i', 'ï' => 'i',
+            'ó' => 'o', 'ò' => 'o', 'õ' => 'o', 'ô' => 'o', 'ö' => 'o',
+            'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ü' => 'u',
+            'ç' => 'c', 'ñ' => 'n',
+            'Á' => 'A', 'À' => 'A', 'Ã' => 'A', 'Â' => 'A', 'Ä' => 'A',
+            'É' => 'E', 'È' => 'E', 'Ê' => 'E', 'Ë' => 'E',
+            'Í' => 'I', 'Ì' => 'I', 'Î' => 'I', 'Ï' => 'I',
+            'Ó' => 'O', 'Ò' => 'O', 'Õ' => 'O', 'Ô' => 'O', 'Ö' => 'O',
+            'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U', 'Ü' => 'U',
+            'Ç' => 'C', 'Ñ' => 'N',
+        ];
+
+        return strtr($string, $accents);
     }
 }
 

@@ -11,21 +11,52 @@ class SalasList extends Component
 {
     public $salaAtiva = null;
 
-    #[On('mensagemEnviada')]
+    /**
+     * Define os listeners dinamicamente para todas as salas do usuário
+     */
+    protected function getListeners()
+    {
+        $listeners = [
+            'mensagemEnviada' => 'atualizarLista',
+            'mensagensLidas' => 'atualizarBadges',
+            'roomCreated' => 'handleRoomCreated',
+            'membersAdded' => 'handleMembersUpdated',
+            'membersUpdated' => 'handleMembersUpdated',
+        ];
+
+        // Adiciona listener para cada sala do usuário
+        if (Auth::check()) {
+            $user = Auth::user();
+            foreach ($user->salas as $sala) {
+                $listeners["echo-private:sala.{$sala->id},MensagemEnviada"] = 'receberNovaMensagem';
+            }
+        }
+
+        return $listeners;
+    }
+
     public function atualizarLista()
     {
         // Força atualização da lista quando nova mensagem é enviada
     }
 
-    #[On('roomCreated')]
+    public function receberNovaMensagem($event)
+    {
+        // Atualiza a lista quando recebe mensagem via Echo
+        // O Livewire vai re-renderizar e recalcular unread_count
+    }
+
+    public function atualizarBadges()
+    {
+        // Atualiza badges após marcar mensagens como lidas
+    }
+
     public function handleRoomCreated($salaId)
     {
         $this->salaAtiva = $salaId;
         $this->dispatch('salaSelected', salaId: $salaId);
     }
 
-    #[On('membersAdded')]
-    #[On('membersUpdated')]
     public function handleMembersUpdated()
     {
         // Força atualização da lista

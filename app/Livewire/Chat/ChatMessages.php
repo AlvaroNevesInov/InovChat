@@ -38,13 +38,14 @@ class ChatMessages extends Component
         $this->marcarMensagensComoLidas();
     }
 
-    #[On('echo:sala.{salaId},MensagemEnviada')]
+    #[On('echo-private:sala.{salaId},.MensagemEnviada')]
     public function receberMensagem(array $event): void
     {
         $this->marcarMensagensComoLidas();
     }
+    #[On('echo-private:sala.{salaId},.UserTyping')]
 
-    #[On('echo:sala.{salaId},UserTyping')]
+    #[On('echo:sala.{salaId},.UserTyping')]
     public function userTyping(array $event): void
     {
         // Não mostrar o próprio utilizador a digitar

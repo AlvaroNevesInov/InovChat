@@ -4,27 +4,33 @@ namespace App\Livewire\Notifications;
 
 use App\Models\Notification;
 use Livewire\Component;
+use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationBell extends Component
 {
     public $unreadCount = 0;
+    public $notifications = [];
 
     public function mount()
     {
         $this->updateUnreadCount();
+        $this->loadNotifications();
     }
 
     public function getListeners()
     {
-        $userId = auth()->id();
+        $userId = Auth::id();
+
         return [
-            "echo:user.{$userId},NotificationSent" => 'notificationReceived',
+            "echo-private:user.{$userId},.NotificationSent" => 'notificationReceived',
         ];
     }
 
     public function notificationReceived($event)
     {
         $this->updateUnreadCount();
+        $this->loadNotifications();
         $this->dispatch('notificationReceived', $event);
     }
 
@@ -32,7 +38,7 @@ class NotificationBell extends Component
     {
         $notification = Notification::find($notificationId);
 
-        if (!$notification || $notification->user_id !== auth()->id()) {
+        if (!$notification || $notification->user_id !== Auth::id()) {
             return;
         }
 
@@ -40,34 +46,37 @@ class NotificationBell extends Component
         $notification->save();
 
         $this->updateUnreadCount();
+        $this->loadNotifications();
     }
 
     public function markAllAsRead()
     {
-        Notification::where('user_id', auth()->id())
+        Notification::where('user_id', Auth::id())
             ->where('lida', false)
             ->update(['lida' => true]);
 
         $this->updateUnreadCount();
+        $this->loadNotifications();
     }
 
     protected function updateUnreadCount()
     {
-        $this->unreadCount = Notification::where('user_id', auth()->id())
+        $this->unreadCount = Notification::where('user_id', Auth::id())
             ->where('lida', false)
             ->count();
     }
 
-    public function render()
+    protected function loadNotifications()
     {
-        $notifications = Notification::with(['sala', 'mensagem.user'])
-            ->where('user_id', auth()->id())
+        $this->notifications = Notification::with(['sala', 'mensagem.user'])
+            ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
+    }
 
-        return view('livewire.notifications.notification-bell', [
-            'notifications' => $notifications,
-        ]);
+    public function render()
+    {
+        return view('livewire.notifications.notification-bell');
     }
 }

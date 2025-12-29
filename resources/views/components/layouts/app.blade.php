@@ -11,22 +11,22 @@
     @livewireStyles
 </head>
 
-<body class="font-sans antialiased bg-gray-100">
+<body class="font-sans antialiased bg-campfire-50">
     <div class="min-h-screen">
-        <nav class="bg-white border-b border-gray-200">
+        <nav class="bg-white border-b border-ash-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center gap-8">
-                        <h1 class="text-2xl font-bold text-gray-900">InovChat</h1>
+                        <h1 class="text-2xl font-bold text-ash-900">InovChat</h1>
                         @auth
-                            <div class="flex gap-4">
-                                <a href="{{ route('chat') }}" class="text-sm font-medium {{ request()->routeIs('chat') ? 'text-blue-600' : 'text-gray-700 hover:text-gray-900' }}">
+                            <div class="flex gap-6">
+                                <a href="{{ route('chat') }}" class="text-sm font-medium {{ request()->routeIs('chat') ? 'text-campfire-600' : 'text-ash-700 hover:text-campfire-600' }} transition-colors">
                                     Chat
                                 </a>
-                                <a href="{{ route('contacts') }}" class="text-sm font-medium {{ request()->routeIs('contacts') ? 'text-blue-600' : 'text-gray-700 hover:text-gray-900' }}">
+                                <a href="{{ route('contacts') }}" class="text-sm font-medium {{ request()->routeIs('contacts') ? 'text-campfire-600' : 'text-ash-700 hover:text-campfire-600' }} transition-colors">
                                     Contactos
                                 </a>
-                                <a href="{{ route('profile.edit') }}" class="text-sm font-medium {{ request()->routeIs('profile.edit') ? 'text-blue-600' : 'text-gray-700 hover:text-gray-900' }}">
+                                <a href="{{ route('profile.edit') }}" class="text-sm font-medium {{ request()->routeIs('profile.edit') ? 'text-campfire-600' : 'text-ash-700 hover:text-campfire-600' }} transition-colors">
                                     Perfil
                                 </a>
                             </div>
@@ -40,12 +40,12 @@
                             <!-- Settings Dropdown -->
                             <x-dropdown align="right" width="48">
                                 <x-slot name="trigger">
-                                    <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                    <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-lg text-ash-600 bg-white hover:text-ash-900 focus:outline-none transition ease-in-out duration-150">
                                         <div class="flex items-center gap-2">
                                             @if(auth()->user()->avatar)
                                                 <img src="{{ Storage::url(auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover">
                                             @else
-                                                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-semibold">
+                                                <div class="w-8 h-8 rounded-full bg-campfire-500 flex items-center justify-center text-white text-sm font-semibold">
                                                     {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                                                 </div>
                                             @endif
